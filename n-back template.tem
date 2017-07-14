@@ -1,0 +1,16 @@
+# n-back template
+
+#stimulus trial
+trial {
+	trial_type = specific_response;
+	terminator_button = 2;
+   trial_duration = 1000;
+   stimulus_event {
+      picture {
+         text $stimulus;
+         x = 0; y = 0;
+      } stim_pic;
+      time = 0;
+      duration = 500;
+   } n_back_event;
+} n_back_trial;

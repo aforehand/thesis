@@ -1,0 +1,6 @@
+# a template file may contain anything a scenario contains, including templates!
+bitmap 
+ { 
+	filename = $fname;
+	#scale_factor = $factor;
+ } $name;

@@ -1,0 +1,48 @@
+
+I ran the following scripts in order:
+
+batch_filter:
+For each subject, it loads the .set file for each condition in eeglab. It performs a 0.5 Hz highpass filter (1 Hz for subject 9) and saves the filtered files to a new folder. I got the parameters from running the filter once in the GUI and then copying the parameters from the history into the script. I did this for each eeglab command in subsequent scripts
+
+I also downsample to 256 Hz in batch_filter, but I run it separately for that after filtering, with the filtering line commented and the resample line uncommented, and the same with the relevant paths.
+
+batch_epoch:
+I load the .set files in the same manner as in the pervious script. First I load the .set file, then generate 3s epochs of faces and save a new .set file containing only these. I repeat for houses and transitions/patchy images. For rivalry, replay, and classifier training conditions, faces have a code of 1, houses have a code of 2, and transitions/patchy images both have a code of 3. Target images in the classifier condition have codes of 101, 102, and 103, for which I did not make epochs.
+
+manual epoch rejection:
+After epoching I went through each file manually and removed epochs in the rivalry and replay conditions for which the stimulus at 0s lasted much less than 500ms. If it lasted only marginally less, I kept it. I also had to correct for a coding error in the classifier training condition. Clicks also generated a code of 1 so I removed epochs in the face training file that corresponded to clicks rather than stimulus presentations. They were usually obvious to distinguish, but if a click occurred very close to a stimulus onset I deleted both epochs. I also manually removed large artifacts. 
+
+batch_ica:
+This script is the same as the others with an additional loop over stimuli. Each file is loaded and then ICA is run on it.
+
+removing components:
+After running ICA I manually went through each file and made note of which components corresponded to blinks or other obvious artifacts such as an especially noisy channel and then removed them. I also removed epochs that still had artifacts.
+
+batch_remove_baseline:
+Each file is loaded and a baseline over 1s before stimulus onset is removed. For the face training file for subjects 1, 12, and 13, this was done prior to ICA. 
+
+batch_cross_class:
+This script loads the file for the face and house stimulus types in the classifier training condition. The data from each of these is placed into a cell array, which is passed into Hinze's cross-classification function. I save the outputs from this and the subject number in a workspace for that subject. I then generate a colormap of the results.
+
+permutation_test:
+I ran this script in several different ways, so different sections are commented or uncommented depending on which way it is being run. Each file is loaded, with the test data having its baseline removed or not. The data from these files is placed into cell arrays correponding to each condition. I then generate a "shuffled" cell array with each cell containing half of the trials from each stimulus. For actual permutation testing, I will alter this section to randomly distribute the trials.
+
+If a range of points of maximum performance is used for classification, I find maximum point from the cross-classification, and place it and the 8 surrounding time points into an array. 
+
+I then run a classifier function for each condition, which either classifies one set of training data using the maximum range (Modified_Classifier), classifies one set of training data at each point with the test data at the corresponding point (Modified_classifier_Point_By_Point), or classifies two sets of training data using Hinze's script (EEG_Matti64_Classify_Sub_MovAv_IndepTrainingSet).
+
+I then save a workspace for each subject with the results of the classifications. I made a different workspace for each kind of classification as well.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
